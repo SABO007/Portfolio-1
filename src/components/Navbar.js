@@ -1,102 +1,91 @@
-import React, { useState } from "react";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import Container from "react-bootstrap/Container";
-import Button from "react-bootstrap/Button";
+import React, { useState, useEffect } from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { CgGitFork } from "react-icons/cg";
-import { ImBlog } from "react-icons/im";
+import { AiOutlineUser } from "react-icons/ai";
+import { CgFileDocument } from "react-icons/cg";
 import {
   AiFillStar,
   AiOutlineHome,
   AiOutlineFundProjectionScreen,
-  AiOutlineUser,
 } from "react-icons/ai";
 
-import { CgFileDocument } from "react-icons/cg";
 
 function NavBar() {
-  const [expand, updateExpanded] = useState(false);
-  const [navColour, updateNavbar] = useState(false);
+  const [navColour, setNavColour] = useState(false);
 
-  function scrollHandler() {
-    if (window.scrollY >= 20) {
-      updateNavbar(true);
-    } else {
-      updateNavbar(false);
-    }
-  }
+  const handleScroll = () => {
+    setNavColour(window.scrollY >= 20);
+  };
 
-  window.addEventListener("scroll", scrollHandler);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
-  return (
+  const renderDesktopNav = () => (
     <Navbar
-      expanded={expand}
       fixed="top"
       expand="md"
-      className={navColour ? "sticky" : "navbar"}
+      className={`desktop-navbar ${navColour ? "sticky" : ""}`}
     >
       <Container>
-        <Navbar.Brand href="/" className="d-flex">
-        <h1 className="logo">
-          <span className="logo-name"><span className="purple">My</span> <span className="white">Portfolio</span></span>
-        </h1>            
+        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
+          <h1 className="logo mb-0">
+            <span className="logo-name">
+              <span className="purple">My</span>{" "}
+              <span className="white">Portfolio</span>
+            </span>
+          </h1>
         </Navbar.Brand>
-        <Navbar.Toggle
-          aria-controls="responsive-navbar-nav"
-          onClick={() => {
-            updateExpanded(expand ? false : "expanded");
-          }}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </Navbar.Toggle>
+
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="ms-auto" defaultActiveKey="#home">
+          <Nav className="ms-auto d-flex align-items-center">
+            
             <Nav.Item>
-              <Nav.Link as={Link} to="/" onClick={() => updateExpanded(false)}>
+              <Nav.Link as={Link} to="/">
                 <AiOutlineHome style={{ marginBottom: "2px" }} /> Home
               </Nav.Link>
             </Nav.Item>
-
             <Nav.Item>
-              <Nav.Link
-                as={Link}
-                to="/about"
-                onClick={() => updateExpanded(false)}
-              >
+              <Nav.Link as={Link} to="/about">
                 <AiOutlineUser style={{ marginBottom: "2px" }} /> About
               </Nav.Link>
             </Nav.Item>
-{/* 
             <Nav.Item>
-              <Nav.Link
-                as={Link}
-                to="/project"
-                onClick={() => updateExpanded(false)}
-              >
-                <AiOutlineFundProjectionScreen
-                  style={{ marginBottom: "2px" }}
-                />{" "}
-                Projects
-              </Nav.Link>
-            </Nav.Item> */}
-
-            <Nav.Item>
-              <Nav.Link
-                as={Link}
-                to="/resume"
-                onClick={() => updateExpanded(false)}
-              >
+              <Nav.Link as={Link} to="/resume">
                 <CgFileDocument style={{ marginBottom: "2px" }} /> Resume
               </Nav.Link>
             </Nav.Item>
-
           </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
+  );
+
+  const renderMobileNav = () => (
+    <div className="mobile-navbar">
+      <Navbar expand="lg" className={`mobile-navbar ${navColour ? "sticky" : ""}`}>
+        <Container>
+          <Navbar.Brand as={Link} to="/" className="d-flex align-items-center">
+            <h1 className="logo mb-0">
+              <span className="logo-name">
+                <span className="purple">My</span>{" "}
+                <span className="white">Portfolio</span>
+              </span>
+            </h1>
+          </Navbar.Brand>
+        </Container>
+      </Navbar>
+    </div>
+  );
+
+  return (
+    <>
+      {renderDesktopNav()}
+      {renderMobileNav()}
+    </>
   );
 }
 
